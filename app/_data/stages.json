@@ -1,0 +1,11 @@
+[{
+  "name" : "basic stage",
+  "floors" : [
+    {
+      "startX": 100,
+      "endX": 700,
+      "startY": 350,
+      "endY" : 350
+    }
+  ]
+}]

@@ -1,0 +1,26 @@
+/* 
+*
+*	XL Platform Fighter
+*	XL Gaming/Declan Tyson
+*	v0.0.1
+*	07/09/2016
+*
+*/
+/* Defaults */
+html, body {
+  margin: 0; }
+
+.clear, .clearfix {
+  clear: both; }
+  .clear.padout, .clearfix.padout {
+    padding: 20px 0; }
+
+canvas {
+  width: 800px;
+  height: 450px;
+  border: solid 1px #cdcdcd;
+  margin: 40px; }
+
+/* Mixins */
+
+/*# sourceMappingURL=styles.css.map */

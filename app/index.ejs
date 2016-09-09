@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+	<title>New Project</title>
+	<link rel="stylesheet" type="text/css" href="/_css/styles.min.css">
+</head>
+<body>
+	<canvas id="stage"></canvas>
+	<script type="text/javascript" src="/_scripts/compiled/characters.js"></script>
+	<script type="text/javascript" src="/_scripts/compiled/stages.js"></script>
+	<script type="text/javascript" src="/_scripts/compiled/game.js"></script>
+
+	<script>
+
+		var activeGame = new Game("stage", 800, 450, 30);
+		var tempStage = new Stage(activeGame, "basic stage", [new Floor(100, 350, 700, 350)])
+		var tempCharacter = new Character(activeGame, "all around dude", 400, 1, 0.5, 1, [new Hurtbox(250, 350, 15, 35)], 0.15);
+		var tempScene = new Scene(activeGame, tempStage, tempCharacter);
+
+	</script>
+</body>
+</html>
