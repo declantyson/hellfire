@@ -2,7 +2,7 @@
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.1
+ *	v0.0.2
  *	07/09/2016
  *
  */
@@ -25,6 +25,7 @@ class Scene {
         this.stage = stage;
         this.playerOne = playerOne;
 
+        // this.draw();
         setInterval(this.draw.bind(this), 1000 / this.game.fps);
     }
 
@@ -62,22 +63,20 @@ class Scene {
     }
 
     characterActions(character) {
+        character.fall(this.stage.gravity, this.stage.floors);
+
         if(typeof keys[this.game.currentKey] === "undefined") return;
         var action = keys[this.game.currentKey];
 
         if(action == "right") {
-            if(this.game.keyChanged) {
-                character.turn();
-                this.game.keyChanged = false;
+            if(this.game.keyChanged && character.currentDir !== 1) {
+                character.turn(1);
             }
-            character.currentDir = 1;
             character.move();
         } else if(action == "left") {
-            if(this.game.keyChanged) {
-                character.turn();
-                this.game.keyChanged = false;
+            if(this.game.keyChanged && character.currentDir !== -1) {
+                character.turn(-1);
             }
-            character.currentDir = -1;
             character.move();
         } else if(action == "stop") {
             character.stop();

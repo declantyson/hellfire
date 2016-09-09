@@ -12,9 +12,9 @@
 
 	<script>
 
-		var activeGame = new Game("stage", 800, 450, 30);
-		var tempStage = new Stage(activeGame, "basic stage", [new Floor(100, 350, 700, 350)])
-		var tempCharacter = new Character(activeGame, "all around dude", 400, 1, 0.5, 1, [new Hurtbox(250, 350, 15, 35)], 0.15);
+		var activeGame = new Game("stage", 800, 450, 60);
+		var tempStage = new Stage(activeGame, "basic stage", [new Floor(100, 150, 700, 150)], 500);
+		var tempCharacter = new Character(activeGame, "all around dude", 400, 2, 1, 1, [new Hurtbox(250, 150, 15, 35)], 0.15, 1, 300);
 		var tempScene = new Scene(activeGame, tempStage, tempCharacter);
 
 	</script>

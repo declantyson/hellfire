@@ -8,31 +8,42 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.1
- *	07/09/2016
+ *	v0.0.4
+ *	08/09/2016
  *
  */
 
 var Character = function () {
-    function Character(game, name, maxSpeed, acceleration, deceleration, currentDir, hurtboxes, turnDelay, actions) {
+    function Character(game, name, maxSpeed, acceleration, deceleration, currentDir, hurtboxes, turnDelay, weight, airSpeed) {
         _classCallCheck(this, Character);
 
         this.game = game;
+
+        // attributes
         this.name = name;
         this.maxSpeed = maxSpeed / this.game.fps;
         this.acceleration = acceleration;
         this.deceleration = deceleration;
-        this.currentSpeed = 0;
-        this.currentDir = currentDir;
-        this.hurtboxes = hurtboxes;
         this.turnDelay = turnDelay;
+        this.hurtboxes = hurtboxes;
+        this.weight = weight;
+        this.airSpeed = airSpeed / this.game.fps;
+
+        // state
+        this.currentSpeed = 0;
+        this.currentFallSpeed = 0;
+        this.currentDir = currentDir;
+        this.currentVerticalDir = 1;
     }
 
     _createClass(Character, [{
         key: "move",
         value: function move() {
-            var acceleration = this.maxSpeed / (this.acceleration * this.game.fps);
-            if (this.currentSpeed < this.maxSpeed) {
+            var maxMovementSpeed = this.maxSpeed;
+            if (this.currentFallSpeed > 0) maxMovementSpeed = this.airSpeed;
+
+            var acceleration = maxMovementSpeed / (this.acceleration * this.game.fps);
+            if (this.currentSpeed < maxMovementSpeed) {
                 this.currentSpeed += acceleration;
             }
 
@@ -44,6 +55,10 @@ var Character = function () {
         key: "stop",
         value: function stop() {
             var deceleration = this.maxSpeed / (this.deceleration * this.game.fps);
+            if (this.currentFallSpeed > 0) {
+                deceleration = deceleration / 3;
+            }
+
             if (this.currentSpeed > 0) {
                 this.currentSpeed -= deceleration;
                 if (this.currentSpeed < 0) this.currentSpeed = 0;
@@ -55,8 +70,43 @@ var Character = function () {
         }
     }, {
         key: "turn",
-        value: function turn() {
-            this.currentSpeed = this.maxSpeed / (this.turnDelay * this.game.fps);
+        value: function turn(dir) {
+            if (this.currentSpeed === 0) return;
+
+            var deceleration = this.maxSpeed / (this.turnDelay * this.game.fps);
+            if (this.currentSpeed > 0) {
+                this.currentSpeed -= deceleration;
+                if (this.currentSpeed < 0) this.currentSpeed = 0;
+            }
+
+            if (this.currentSpeed === 0) {
+                this.currentDir = dir;
+                this.game.keyChanged = false;
+            }
+        }
+    }, {
+        key: "fall",
+        value: function fall(gravity, floors) {
+            var hitFloor = false;
+
+            for (var h = 0; h < this.hurtboxes.length; h++) {
+                var hurtbox = this.hurtboxes[h];
+                for (var f = 0; f < floors.length; f++) {
+                    var floor = floors[f];
+                    if (hurtbox.y == floor.startY && (hurtbox.x >= floor.startX && hurtbox.x <= floor.endX || hurtbox.x + hurtbox.width >= floor.startX && hurtbox.x + hurtbox.width <= floor.endX)) {
+                        hitFloor = true;
+                    }
+                }
+                if (hitFloor) {
+                    this.currentFallSpeed = 0;
+                    break;
+                }
+
+                console.log(this.currentFallSpeed);
+
+                this.currentFallSpeed += gravity / (this.weight * this.game.fps);
+                hurtbox.y += this.currentVerticalDir * this.currentFallSpeed;
+            }
         }
     }]);
 
