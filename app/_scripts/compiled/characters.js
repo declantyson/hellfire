@@ -8,35 +8,75 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.4
- *	08/09/2016
+ *	v0.0.22
+ *	10/09/2016
  *
  */
 
 var Character = function () {
-    function Character(game, name, maxSpeed, acceleration, deceleration, currentDir, hurtboxes, turnDelay, weight, airSpeed) {
+    function Character(game, startPosY, startPosX) {
         _classCallCheck(this, Character);
 
         this.game = game;
-
-        // attributes
-        this.name = name;
-        this.maxSpeed = maxSpeed / this.game.fps;
-        this.acceleration = acceleration;
-        this.deceleration = deceleration;
-        this.turnDelay = turnDelay;
-        this.hurtboxes = hurtboxes;
-        this.weight = weight;
-        this.airSpeed = airSpeed / this.game.fps;
-
-        // state
-        this.currentSpeed = 0;
-        this.currentFallSpeed = 0;
-        this.currentDir = currentDir;
-        this.currentVerticalDir = 1;
     }
 
     _createClass(Character, [{
+        key: "initialise",
+        value: function initialise(opts) {
+            // attributes
+            this.name = opts.name;
+            this.maxSpeed = opts.maxSpeed / this.game.fps;
+            this.acceleration = opts.acceleration;
+            this.deceleration = opts.deceleration;
+            this.turnDelay = opts.turnDelay;
+            this.hurtboxes = opts.hurtboxes;
+            this.weight = 1 / opts.weight;
+            this.airSpeed = opts.airSpeed / this.game.fps;
+            this.jumpPower = 1 / opts.jumpPower;
+            this.jumpHeight = opts.jumpHeight;
+            this.allowedJumps = opts.allowedJumps;
+            this.jumpThreshold = opts.jumpThreshold;
+
+            // state
+            this.currentSpeed = 0;
+            this.currentFallSpeed = 0;
+            this.currentDir = opts.currentDir;
+            this.currentVerticalDir = 1;
+            this.jumpStart = this.hurtboxes[0].y;
+            this.jumpsRemaining = opts.allowedJumps;
+        }
+    }, {
+        key: "drawActions",
+        value: function drawActions(stage) {
+
+            this.fall(stage.gravity, stage.floors);
+
+            if (this.game.currentKeys[this.game.keyBindings.right]) {
+                if (this.game.keyChanged && this.currentDir !== 1) {
+                    this.turn(1);
+                }
+                this.move();
+            } else if (this.game.currentKeys[this.game.keyBindings.left]) {
+                if (this.game.keyChanged && this.currentDir !== -1) {
+                    this.turn(-1);
+                }
+                this.move();
+            } else {
+                this.stop();
+            }
+
+            if (this.game.currentKeys[this.game.keyBindings.jump]) {
+                if (this.jumpsRemaining > 0) {
+                    if (this.jumpsRemaining < this.allowedJumps && this.hurtboxes[0].y > this.jumpStart - this.jumpThreshold) {
+                        return;
+                    }
+                    this.jumpStart = this.hurtboxes[0].y;
+                    this.currentVerticalDir = -1;
+                    this.jumpsRemaining--;
+                }
+            }
+        }
+    }, {
         key: "move",
         value: function move() {
             var maxMovementSpeed = this.maxSpeed;
@@ -87,25 +127,42 @@ var Character = function () {
     }, {
         key: "fall",
         value: function fall(gravity, floors) {
+            if (this.currentVerticalDir === -1) {
+                this.jump(gravity, floors);
+                return;
+            }
+
             var hitFloor = false;
 
             for (var h = 0; h < this.hurtboxes.length; h++) {
                 var hurtbox = this.hurtboxes[h];
                 for (var f = 0; f < floors.length; f++) {
                     var floor = floors[f];
-                    if (hurtbox.y == floor.startY && (hurtbox.x >= floor.startX && hurtbox.x <= floor.endX || hurtbox.x + hurtbox.width >= floor.startX && hurtbox.x + hurtbox.width <= floor.endX)) {
+                    if (hurtbox.y >= floor.y && (hurtbox.x >= floor.x && hurtbox.x <= floor.x + floor.width || hurtbox.x + hurtbox.width >= floor.x && hurtbox.x + hurtbox.width <= floor.x + floor.width)) {
                         hitFloor = true;
+                        this.hurtboxes[0].y = floor.y;
                     }
                 }
                 if (hitFloor) {
+                    this.jumpsRemaining = this.allowedJumps;
                     this.currentFallSpeed = 0;
                     break;
+                } else if (this.jumpsRemaining === this.allowedJumps) {
+                    this.jumpsRemaining = this.allowedJumps - 1;
                 }
 
-                console.log(this.currentFallSpeed);
-
                 this.currentFallSpeed += gravity / (this.weight * this.game.fps);
-                hurtbox.y += this.currentVerticalDir * this.currentFallSpeed;
+                hurtbox.y += this.currentFallSpeed;
+            }
+        }
+    }, {
+        key: "jump",
+        value: function jump(gravity, floors) {
+            if (this.hurtboxes[0].y > this.jumpStart - this.jumpHeight) {
+                this.currentFallSpeed -= gravity / (this.jumpPower * this.game.fps);
+                this.hurtboxes[0].y += this.currentFallSpeed;
+            } else {
+                this.currentVerticalDir = 1;
             }
         }
     }]);

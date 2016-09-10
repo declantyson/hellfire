@@ -9,6 +9,7 @@ app.use("/_css", express.static(__dirname + '/_css'));
 app.use("/_data", express.static(__dirname + '/_data'));
 app.use("/_libs", express.static(__dirname + '/_libs'));
 app.use("/_scripts", express.static(__dirname + '/_scripts'));
+app.use("/characters", express.static(__dirname + '/_scripts/compiled/_data/characters/'));
 
 app.get('/', function(req,res) {
     res.writeHead(200, {'Content-Type': 'text/html'});
@@ -21,6 +22,6 @@ app.get('/', function(req,res) {
     });
 });
 
-http.createServer(app).listen(3000);
+http.createServer(app).listen(3002);
 
-console.log("App running on 3000");
+console.log("App running on 3002");

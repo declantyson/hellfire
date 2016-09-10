@@ -1,20 +1,27 @@
 <!doctype html>
 <html>
 <head>
-	<title>New Project</title>
+	<title>XL</title>
 	<link rel="stylesheet" type="text/css" href="/_css/styles.min.css">
 </head>
 <body>
 	<canvas id="stage"></canvas>
 	<script type="text/javascript" src="/_scripts/compiled/characters.js"></script>
+	<script type="text/javascript" src="/characters/all_around_dude.js"></script>
+
 	<script type="text/javascript" src="/_scripts/compiled/stages.js"></script>
+
 	<script type="text/javascript" src="/_scripts/compiled/game.js"></script>
 
 	<script>
 
 		var activeGame = new Game("stage", 800, 450, 60);
-		var tempStage = new Stage(activeGame, "basic stage", [new Floor(100, 150, 700, 150)], 500);
-		var tempCharacter = new Character(activeGame, "all around dude", 400, 2, 1, 1, [new Hurtbox(250, 150, 15, 35)], 0.15, 1, 300);
+		var tempStage = new Stage(activeGame, "basic stage", [
+			new Floor(100, 350, 600),
+			new Floor(50, 250, 100),
+			new Floor(650, 250, 100)
+		], 1000);
+		var tempCharacter = new AllAroundDude(activeGame, 250, 350);
 		var tempScene = new Scene(activeGame, tempStage, tempCharacter);
 
 	</script>

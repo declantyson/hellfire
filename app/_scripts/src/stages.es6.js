@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Stages
  *	XL Gaming/Declan Tyson
- *	v0.0.2
- *	07/09/2016
+ *	v0.0.3
+ *	10/09/2016
  *
  */
 
@@ -17,10 +17,9 @@ class Stage {
 }
 
 class Floor {
-    constructor(startX, startY, endX, endY) {
-        this.startX = startX;
-        this.startY = startY;
-        this.endX = endX;
-        this.endY = endY;
+    constructor(x, y, width) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
     }
 }

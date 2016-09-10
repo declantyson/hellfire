@@ -6,8 +6,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Stages
  *	XL Gaming/Declan Tyson
- *	v0.0.2
- *	07/09/2016
+ *	v0.0.3
+ *	10/09/2016
  *
  */
 
@@ -20,12 +20,11 @@ var Stage = function Stage(game, name, floors, gravity) {
     this.gravity = gravity / this.game.fps;
 };
 
-var Floor = function Floor(startX, startY, endX, endY) {
+var Floor = function Floor(x, y, width) {
     _classCallCheck(this, Floor);
 
-    this.startX = startX;
-    this.startY = startY;
-    this.endX = endX;
-    this.endY = endY;
+    this.x = x;
+    this.y = y;
+    this.width = width;
 };
 //# sourceMappingURL=stages.js.map

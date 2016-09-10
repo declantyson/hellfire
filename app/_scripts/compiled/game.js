@@ -8,8 +8,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.2
- *	07/09/2016
+ *	v0.0.12
+ *	10/09/2016
  *
  */
 
@@ -21,8 +21,13 @@ var Game = function Game(element, width, height, fps) {
     this.canvas.height = height;
     this.fps = fps;
     this.ctx = this.canvas.getContext("2d");
-    this.currentKey = -1;
+    this.currentKeys = [];
     this.keyChanged = false;
+    this.keyBindings = {
+        left: 37,
+        jump: 38,
+        right: 39
+    };
 };
 
 var Scene = function () {
@@ -59,8 +64,8 @@ var Scene = function () {
             for (var i = 0; i < this.stage.floors.length; i++) {
                 var floor = this.stage.floors[i];
 
-                pre_ctx.moveTo(floor.startX, floor.startY);
-                pre_ctx.lineTo(floor.endX, floor.endY);
+                pre_ctx.moveTo(floor.x, floor.y);
+                pre_ctx.lineTo(floor.x + floor.width, floor.y);
                 pre_ctx.stroke();
             }
         }
@@ -76,44 +81,21 @@ var Scene = function () {
     }, {
         key: 'characterActions',
         value: function characterActions(character) {
-            character.fall(this.stage.gravity, this.stage.floors);
-
-            if (typeof keys[this.game.currentKey] === "undefined") return;
-            var action = keys[this.game.currentKey];
-
-            if (action == "right") {
-                if (this.game.keyChanged && character.currentDir !== 1) {
-                    character.turn(1);
-                }
-                character.move();
-            } else if (action == "left") {
-                if (this.game.keyChanged && character.currentDir !== -1) {
-                    character.turn(-1);
-                }
-                character.move();
-            } else if (action == "stop") {
-                character.stop();
-            }
+            character.drawActions(this.stage);
         }
     }]);
 
     return Scene;
 }();
 
-var keys = {
-    "-1": "stop",
-    "37": "left",
-    "39": "right"
-};
-
 document.onkeydown = function (e) {
-    if (activeGame.currentKey !== e.keyCode) {
+    if (!activeGame.currentKeys[e.keyCode]) {
         activeGame.keyChanged = true;
-        activeGame.currentKey = e.keyCode;
+        activeGame.currentKeys[e.keyCode] = true;
     }
 };
 
-document.onkeyup = function () {
-    activeGame.currentKey = -1;
+document.onkeyup = function (e) {
+    activeGame.currentKeys[e.keyCode] = false;
 };
 //# sourceMappingURL=game.js.map
