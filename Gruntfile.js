@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 		},
 		watch : {
 			scripts: {
-				files: ['app/_scripts/src/*.js',  '!**/*.min.js'],
+				files: ['app/_scripts/src/*.js',  '!**/*.min.js', 'app/_scripts/src/_data/characters/*.js'],
 				tasks: ['jshint', 'babel', 'uglify'],
 				options: {
 

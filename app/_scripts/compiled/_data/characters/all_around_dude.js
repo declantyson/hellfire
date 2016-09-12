@@ -12,8 +12,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.6
- *	10/09/2016
+ *	v0.0.7
+ *	12/09/2016
  *
  */
 
@@ -35,8 +35,8 @@ var AllAroundDude = function (_Character) {
             turnDelay: 0.15,
             weight: 1,
             airSpeed: 300,
-            jumpPower: 1,
-            jumpHeight: 20,
+            jumpPower: 4,
+            jumpHeight: 10,
             allowedJumps: 2,
             jumpThreshold: {
                 up: 5,

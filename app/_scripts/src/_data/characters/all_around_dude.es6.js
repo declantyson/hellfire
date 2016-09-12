@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.6
- *	10/09/2016
+ *	v0.0.7
+ *	13/09/2016
  *
  */
 
@@ -22,8 +22,8 @@ class AllAroundDude extends Character {
             turnDelay: 0.15,
             weight: 1,
             airSpeed: 300,
-            jumpPower: 1,
-            jumpHeight: 20,
+            jumpPower: 4,
+            jumpHeight: 10,
             allowedJumps: 2,
             jumpThreshold: {
                 up: 5,

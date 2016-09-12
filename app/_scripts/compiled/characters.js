@@ -8,8 +8,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.26
- *	10/09/2016
+ *	v0.0.29
+ *	13/09/2016
  *
  */
 
@@ -45,6 +45,7 @@ var Character = function () {
             this.jumpStart = this.hurtboxes[0].y;
             this.jumpsRemaining = opts.allowedJumps;
             this.jumpHeld = false;
+            this.jumping = false;
         }
     }, {
         key: "drawActions",
@@ -137,13 +138,19 @@ var Character = function () {
                 return;
             }
 
+            console.log(this.currentFallSpeed);
+            if (this.currentFallSpeed > 0) {
+                this.jumping = false;
+            }
+
             var hitFloor = false;
 
             for (var h = 0; h < this.hurtboxes.length; h++) {
                 var hurtbox = this.hurtboxes[h];
+
                 for (var f = 0; f < floors.length; f++) {
                     var floor = floors[f];
-                    if (hurtbox.y >= floor.y && (hurtbox.x >= floor.x && hurtbox.x <= floor.x + floor.width || hurtbox.x + hurtbox.width >= floor.x && hurtbox.x + hurtbox.width <= floor.x + floor.width)) {
+                    if (!this.jumping && hurtbox.y >= floor.y && this.currentVerticalDir === 1 && hurtbox.y - hurtbox.height <= floor.y && (hurtbox.x >= floor.x && hurtbox.x <= floor.x + floor.width || hurtbox.x + hurtbox.width >= floor.x && hurtbox.x + hurtbox.width <= floor.x + floor.width)) {
                         hitFloor = true;
                         this.hurtboxes[0].y = floor.y;
                     }
@@ -166,6 +173,7 @@ var Character = function () {
             if (this.hurtboxes[0].y > this.jumpStart - this.jumpHeight) {
                 this.currentFallSpeed -= gravity / (this.jumpPower * this.game.fps);
                 this.hurtboxes[0].y += this.currentFallSpeed;
+                this.jumping = true;
             } else {
                 this.currentVerticalDir = 1;
             }
