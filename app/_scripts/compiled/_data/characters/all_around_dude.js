@@ -12,7 +12,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.5
+ *	v0.0.6
  *	10/09/2016
  *
  */
@@ -38,7 +38,10 @@ var AllAroundDude = function (_Character) {
             jumpPower: 1,
             jumpHeight: 20,
             allowedJumps: 2,
-            jumpThreshold: 5
+            jumpThreshold: {
+                up: 5,
+                down: 15
+            }
         };
 
         _get(AllAroundDude.prototype.__proto__ || Object.getPrototypeOf(AllAroundDude.prototype), "initialise", _this).call(_this, opts);
