@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.18
+ *	v0.0.22
  *	16/09/2016
  *
  */
@@ -24,11 +24,6 @@ var Game = function () {
         this.ctx = this.canvas.getContext("2d");
         this.currentKeys = [];
         this.keyChanged = false;
-        this.keyBindings = {
-            left: 37,
-            jump: 38,
-            right: 39
-        };
         this.startingStockCount = 4;
     }
 
@@ -37,7 +32,7 @@ var Game = function () {
         value: function gameOver() {
             setTimeout(function () {
                 // TODO: Go to victory screen
-                clearInterval(window.player);
+                clearInterval(window.drawScene);
             }, 100);
         }
     }]);
@@ -45,15 +40,25 @@ var Game = function () {
     return Game;
 }();
 
+var Player = function Player(character, keys) {
+    _classCallCheck(this, Player);
+
+    this.character = character;
+    this.character.keyBindings = {
+        left: keys.left,
+        jump: keys.jump,
+        right: keys.right
+    };
+};
+
 var Scene = function () {
-    function Scene(game, stage, playerOne) {
+    function Scene(game, stage, players) {
         _classCallCheck(this, Scene);
 
         this.game = game;
         this.stage = stage;
-        this.playerOne = playerOne;
-
-        window.player = setInterval(this.draw.bind(this), 1000 / this.game.fps);
+        this.players = players;
+        window.drawScene = setInterval(this.draw.bind(this), 1000 / this.game.fps);
     }
 
     _createClass(Scene, [{
@@ -69,7 +74,9 @@ var Scene = function () {
             this.drawStageFloors(pre_ctx);
             this.drawCharacters(pre_ctx);
             this.drawCharacterStocks(pre_ctx);
-            this.characterActions(this.playerOne);
+            for (var i = 0; i < this.players.length; i++) {
+                this.characterActions(this.players[i].character);
+            }
 
             this.game.ctx.drawImage(pre_canvas, 0, 0);
         }
@@ -87,20 +94,21 @@ var Scene = function () {
     }, {
         key: 'drawCharacterStocks',
         value: function drawCharacterStocks(pre_ctx) {
-            var stockIcon = this.playerOne.stockIcon;
-            for (var i = 0; i < this.playerOne.stocks; i++) {
+            for (var i = 0; i < this.players[0].character.stocks; i++) {
                 var img = document.createElement('img');
-                img.setAttribute("src", "/stock-icons/" + this.playerOne.id + ".png");
+                img.setAttribute("src", "/stock-icons/" + this.players[0].character.id + ".png");
                 pre_ctx.drawImage(img, 32 + 40 * i, 32);
             }
         }
     }, {
         key: 'drawCharacters',
         value: function drawCharacters(pre_ctx) {
-            for (var i = 0; i < this.playerOne.hurtboxes.length; i++) {
-                var hurtbox = this.playerOne.hurtboxes[i];
-                pre_ctx.rect(hurtbox.x, hurtbox.y - hurtbox.height, hurtbox.width, hurtbox.height);
-                pre_ctx.stroke();
+            for (var i = 0; i < this.players.length; i++) {
+                for (var h = 0; h < this.players[i].character.hurtboxes.length; h++) {
+                    var hurtbox = this.players[i].character.hurtboxes[h];
+                    pre_ctx.rect(hurtbox.x, hurtbox.y - hurtbox.height, hurtbox.width, hurtbox.height);
+                    pre_ctx.stroke();
+                }
             }
         }
     }, {

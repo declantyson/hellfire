@@ -2,13 +2,13 @@
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.39
+ *	v0.0.42
  *	16/09/2016
  *
  */
 
 class Character {
-    constructor(game, startPosY, startPosX) {
+    constructor(game, startPosX, startPosY) {
         this.game = game;
         this.startPosX = startPosX;
         this.startPosY = startPosY;
@@ -43,15 +43,14 @@ class Character {
     }
     
     drawActions(stage) {
-
         this.fall(stage.gravity, stage.floors);
 
-        if(this.game.currentKeys[this.game.keyBindings.right]) {
+        if(this.game.currentKeys[this.keyBindings.right]) {
             if (this.game.keyChanged && this.currentDir !== 1) {
                 this.turn(1);
             }
             this.move();
-        } else if (this.game.currentKeys[this.game.keyBindings.left]) {
+        } else if (this.game.currentKeys[this.keyBindings.left]) {
             if (this.game.keyChanged && this.currentDir !== -1) {
                 this.turn(-1);
             }
@@ -60,7 +59,7 @@ class Character {
             this.stop();
         }
 
-        if (this.game.currentKeys[this.game.keyBindings.jump]) {
+        if (this.game.currentKeys[this.keyBindings.jump]) {
             if(this.jumpHeld) return;
             this.jumpHeld = true;
             if (this.jumpsRemaining > 0) {
@@ -90,11 +89,9 @@ class Character {
 
     loseStock() {
         this.stocks--;
-
         if(this.stocks <= 0) {
             this.game.gameOver();
         } else {
-            console.log("Resetting...");
             this.hurtboxes[0].x = this.startPosX;
             this.hurtboxes[0].y = this.startPosY;
             this.currentSpeed = 0;
@@ -199,6 +196,15 @@ class Character {
 }
 
 class Hurtbox {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+}
+
+class Hitbox {
     constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
