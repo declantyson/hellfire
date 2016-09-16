@@ -2,14 +2,14 @@
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.9
+ *	v0.0.12
  *	16/09/2016
  *
  */
 
 class AllAroundDude extends Character {
-    constructor(game, startPosY, startPosX) {
-        super(game, startPosY, startPosX);
+    constructor(game, startPosX, startPosY) {
+        super(game, startPosX, startPosY);
         var opts = {
             id: "AllAroundDude",
             name: "All Around Dude",
@@ -18,8 +18,13 @@ class AllAroundDude extends Character {
             deceleration:1,
             currentDir: 1,
             hurtboxes: [
-                new Hurtbox(startPosY, startPosX, 15, 35)
+                new Hurtbox(startPosX, startPosY, 15, 35)
             ],
+            hitboxes: {
+                basicAttack: [
+                    new Hitbox(15, 20, 5, 5, 0, 45, 4, 0)
+                ]
+            },
             turnDelay: 0.15,
             weight: 1,
             airSpeed: 300,
@@ -33,5 +38,9 @@ class AllAroundDude extends Character {
         };
 
         super.initialise(opts);
+    }
+
+    drawActions(stage) {
+        super.drawActions(stage);
     }
 }

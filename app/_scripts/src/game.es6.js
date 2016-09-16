@@ -2,7 +2,7 @@
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.22
+ *	v0.0.32
  *	16/09/2016
  *
  */
@@ -17,6 +17,9 @@ class Game {
         this.currentKeys = [];
         this.keyChanged = false;
         this.startingStockCount = 4;
+        this.visibleHitboxes = {};
+
+        this.players = [];
     }
 
     gameOver() {
@@ -33,7 +36,8 @@ class Player {
         this.character.keyBindings = {
             left  : keys.left,
             jump  : keys.jump,
-            right : keys.right
+            right : keys.right,
+            basicAttack : keys.basicAttack
         };
     }
 }
@@ -43,6 +47,8 @@ class Scene {
         this.game = game;
         this.stage = stage;
         this.players = players;
+
+        this.game.players = players;
         window.drawScene = setInterval(this.draw.bind(this), 1000 / this.game.fps);
     }
 
@@ -59,6 +65,7 @@ class Scene {
         this.drawCharacterStocks(pre_ctx);
         for(var i = 0; i < this.players.length; i++) {
             this.characterActions(this.players[i].character);
+            this.drawHitboxes(pre_ctx, this.players[i].character);
         }
 
         this.game.ctx.drawImage(pre_canvas, 0, 0);
@@ -94,6 +101,25 @@ class Scene {
 
     characterActions(character) {
         character.drawActions(this.stage);
+    }
+
+    drawHitboxes(pre_ctx, character) {
+        for (var h = 0; h < character.visibleHitboxes.length; h++) {
+            var hitbox = character.visibleHitboxes[h];
+            var baseHurtbox = character.hurtboxes[0];
+            var baseX = baseHurtbox.x;
+            if(character.currentDir == 1) {
+                baseX += baseHurtbox.width;
+            }
+
+            hitbox.dir = character.currentDir;
+            hitbox.calculatedX = baseX + (hitbox.xOffset * character.currentDir);
+
+            pre_ctx.strokeStyle = "#FF0000";
+            pre_ctx.rect(hitbox.calculatedX, baseHurtbox.y - hitbox.yOffset, hitbox.width, hitbox.height);
+            pre_ctx.stroke();
+            pre_ctx.strokeStyle = "#000000";
+        }
     }
 }
 

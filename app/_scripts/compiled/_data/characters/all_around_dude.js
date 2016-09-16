@@ -1,5 +1,7 @@
 "use strict";
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -12,7 +14,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.9
+ *	v0.0.12
  *	16/09/2016
  *
  */
@@ -20,10 +22,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var AllAroundDude = function (_Character) {
     _inherits(AllAroundDude, _Character);
 
-    function AllAroundDude(game, startPosY, startPosX) {
+    function AllAroundDude(game, startPosX, startPosY) {
         _classCallCheck(this, AllAroundDude);
 
-        var _this = _possibleConstructorReturn(this, (AllAroundDude.__proto__ || Object.getPrototypeOf(AllAroundDude)).call(this, game, startPosY, startPosX));
+        var _this = _possibleConstructorReturn(this, (AllAroundDude.__proto__ || Object.getPrototypeOf(AllAroundDude)).call(this, game, startPosX, startPosY));
 
         var opts = {
             id: "AllAroundDude",
@@ -32,7 +34,10 @@ var AllAroundDude = function (_Character) {
             acceleration: 2,
             deceleration: 1,
             currentDir: 1,
-            hurtboxes: [new Hurtbox(startPosY, startPosX, 15, 35)],
+            hurtboxes: [new Hurtbox(startPosX, startPosY, 15, 35)],
+            hitboxes: {
+                basicAttack: [new Hitbox(15, 20, 5, 5, 0, 45, 4, 0)]
+            },
             turnDelay: 0.15,
             weight: 1,
             airSpeed: 300,
@@ -48,6 +53,13 @@ var AllAroundDude = function (_Character) {
         _get(AllAroundDude.prototype.__proto__ || Object.getPrototypeOf(AllAroundDude.prototype), "initialise", _this).call(_this, opts);
         return _this;
     }
+
+    _createClass(AllAroundDude, [{
+        key: "drawActions",
+        value: function drawActions(stage) {
+            _get(AllAroundDude.prototype.__proto__ || Object.getPrototypeOf(AllAroundDude.prototype), "drawActions", this).call(this, stage);
+        }
+    }]);
 
     return AllAroundDude;
 }(Character);

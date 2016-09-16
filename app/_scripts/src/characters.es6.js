@@ -2,7 +2,7 @@
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.42
+ *	v0.0.92
  *	16/09/2016
  *
  */
@@ -24,6 +24,7 @@ class Character {
         this.deceleration = opts.deceleration;
         this.turnDelay = opts.turnDelay;
         this.hurtboxes = opts.hurtboxes;
+        this.hitboxes = opts.hitboxes;
         this.weight = 1/opts.weight;
         this.airSpeed = opts.airSpeed / this.game.fps;
         this.jumpPower = 1/opts.jumpPower;
@@ -40,12 +41,22 @@ class Character {
         this.jumpsRemaining = opts.allowedJumps;
         this.jumpHeld = false;
         this.jumping = false;
+        this.stun = false;
+        this.invulnerable = false;
+        this.visibleHitboxes = [];
     }
     
     drawActions(stage) {
         this.fall(stage.gravity, stage.floors);
+        this.visibleHitboxes = [];
 
-        if(this.game.currentKeys[this.keyBindings.right]) {
+        if(this.game.currentKeys[this.keyBindings.basicAttack] && !this.stun) {
+            this.visibleHitboxes = this.hitboxes.basicAttack;
+        }
+
+        if(this.stun) {
+            this.hitstun();
+        } else if(this.game.currentKeys[this.keyBindings.right]) {
             if (this.game.keyChanged && this.currentDir !== 1) {
                 this.turn(1);
             }
@@ -59,7 +70,7 @@ class Character {
             this.stop();
         }
 
-        if (this.game.currentKeys[this.keyBindings.jump]) {
+        if (this.game.currentKeys[this.keyBindings.jump] && !this.stun) {
             if(this.jumpHeld) return;
             this.jumpHeld = true;
             if (this.jumpsRemaining > 0) {
@@ -82,6 +93,28 @@ class Character {
             this.jumpHeld = false;
         }
 
+        if(!this.invulnerable) {
+            for (var hurt = 0; hurt < this.hurtboxes.length; hurt++) {
+                var hurtbox = this.hurtboxes[hurt];
+                for (var c = 0; c < this.game.players.length; c++) {
+                    var character = this.game.players[c].character;
+                    if (this === character) continue;
+                    for (var hit = 0; hit < character.visibleHitboxes.length; hit++) {
+                        var hitbox = character.visibleHitboxes[hit];
+                        if (
+                            (hurtbox.x < hitbox.calculatedX + hitbox.width &&
+                            hurtbox.x + hurtbox.width > hitbox.calculatedX) &&
+                            (hurtbox.y - hurtbox.height < character.hurtboxes[0].y - hitbox.yOffset &&
+                            hurtbox.y > character.hurtboxes[0].y - hitbox.yOffset - hitbox.height)
+                        ) {
+                            this.getHit(hitbox);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         if(this.hurtboxes[0].x < 0 || this.hurtboxes[0].y < 0 || this.hurtboxes[0].x > this.game.canvas.width || this.hurtboxes[0].y > this.game.canvas.height) {
             this.loseStock();
         }
@@ -96,6 +129,32 @@ class Character {
             this.hurtboxes[0].y = this.startPosY;
             this.currentSpeed = 0;
         }
+    }
+
+    getHit(hitbox) {
+        var angleToSpeedModifier = hitbox.angle / 45;
+
+        this.currentVerticalDir = -1;
+        this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback;
+
+        this.currentDir = (this.currentDir * hitbox.dir);
+        this.currentSpeed = (1 / angleToSpeedModifier) * hitbox.knockback;
+
+        //this.stun = true;
+        this.invulnerable = true;
+
+        var character = this;
+        setTimeout(function () {
+            character.invulnerable = false;
+        }, 100);
+
+        setTimeout(function() {
+            character.stun = false;
+        }, hitbox.hitstun);
+    }
+
+    hitstun() {
+        //this.stop()
     }
 
     move() {
@@ -168,6 +227,10 @@ class Character {
                     (hurtbox.x + hurtbox.width >= floor.x && hurtbox.x + hurtbox.width <= floor.x + floor.width))
                 ) {
                     hitFloor = true;
+                    if(this.stun) {
+                        this.stun = false;
+                        this.currentSpeed = this.currentDir;
+                    }
                     this.hurtboxes[0].y = floor.y;
                 }
             }
@@ -189,7 +252,7 @@ class Character {
             this.currentFallSpeed -= gravity / (this.jumpPower * this.game.fps);
             this.hurtboxes[0].y += this.currentFallSpeed;
             this.jumping = true;
-        } else {
+        } else if(!this.stun) {
             this.currentVerticalDir = 1;
         }
     }
@@ -205,10 +268,17 @@ class Hurtbox {
 }
 
 class Hitbox {
-    constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
+    constructor(xOffset, yOffset, width, height, damage, angle, knockback, growth, hitstun) {
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
         this.width = width;
         this.height = height;
+        this.damage = damage;
+        this.angle = angle;
+        this.knockback = knockback;
+        this.growth = growth;
+        this.dir = 1;
+        let hitstunFrames = hitstun || 60;
+        this.hitstun = (hitstunFrames / 60) * 1000;
     }
 }
