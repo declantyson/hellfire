@@ -12,8 +12,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.7
- *	12/09/2016
+ *	v0.0.9
+ *	16/09/2016
  *
  */
 
@@ -26,6 +26,7 @@ var AllAroundDude = function (_Character) {
         var _this = _possibleConstructorReturn(this, (AllAroundDude.__proto__ || Object.getPrototypeOf(AllAroundDude)).call(this, game, startPosY, startPosX));
 
         var opts = {
+            id: "AllAroundDude",
             name: "All Around Dude",
             maxSpeed: 400,
             acceleration: 2,

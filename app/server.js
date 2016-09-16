@@ -10,6 +10,7 @@ app.use("/_data", express.static(__dirname + '/_data'));
 app.use("/_libs", express.static(__dirname + '/_libs'));
 app.use("/_scripts", express.static(__dirname + '/_scripts'));
 app.use("/characters", express.static(__dirname + '/_scripts/compiled/_data/characters/'));
+app.use("/stock-icons", express.static(__dirname + '/_images/stock-icons/'));
 
 app.get('/', function(req,res) {
     res.writeHead(200, {'Content-Type': 'text/html'});

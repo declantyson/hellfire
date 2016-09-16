@@ -8,27 +8,42 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.12
- *	10/09/2016
+ *	v0.0.18
+ *	16/09/2016
  *
  */
 
-var Game = function Game(element, width, height, fps) {
-    _classCallCheck(this, Game);
+var Game = function () {
+    function Game(element, width, height, fps) {
+        _classCallCheck(this, Game);
 
-    this.canvas = document.getElementById(element);
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.fps = fps;
-    this.ctx = this.canvas.getContext("2d");
-    this.currentKeys = [];
-    this.keyChanged = false;
-    this.keyBindings = {
-        left: 37,
-        jump: 38,
-        right: 39
-    };
-};
+        this.canvas = document.getElementById(element);
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.fps = fps;
+        this.ctx = this.canvas.getContext("2d");
+        this.currentKeys = [];
+        this.keyChanged = false;
+        this.keyBindings = {
+            left: 37,
+            jump: 38,
+            right: 39
+        };
+        this.startingStockCount = 4;
+    }
+
+    _createClass(Game, [{
+        key: 'gameOver',
+        value: function gameOver() {
+            setTimeout(function () {
+                // TODO: Go to victory screen
+                clearInterval(window.player);
+            }, 100);
+        }
+    }]);
+
+    return Game;
+}();
 
 var Scene = function () {
     function Scene(game, stage, playerOne) {
@@ -38,8 +53,7 @@ var Scene = function () {
         this.stage = stage;
         this.playerOne = playerOne;
 
-        // this.draw();
-        setInterval(this.draw.bind(this), 1000 / this.game.fps);
+        window.player = setInterval(this.draw.bind(this), 1000 / this.game.fps);
     }
 
     _createClass(Scene, [{
@@ -54,6 +68,7 @@ var Scene = function () {
 
             this.drawStageFloors(pre_ctx);
             this.drawCharacters(pre_ctx);
+            this.drawCharacterStocks(pre_ctx);
             this.characterActions(this.playerOne);
 
             this.game.ctx.drawImage(pre_canvas, 0, 0);
@@ -67,6 +82,16 @@ var Scene = function () {
                 pre_ctx.moveTo(floor.x, floor.y);
                 pre_ctx.lineTo(floor.x + floor.width, floor.y);
                 pre_ctx.stroke();
+            }
+        }
+    }, {
+        key: 'drawCharacterStocks',
+        value: function drawCharacterStocks(pre_ctx) {
+            var stockIcon = this.playerOne.stockIcon;
+            for (var i = 0; i < this.playerOne.stocks; i++) {
+                var img = document.createElement('img');
+                img.setAttribute("src", "/stock-icons/" + this.playerOne.id + ".png");
+                pre_ctx.drawImage(img, 32 + 40 * i, 32);
             }
         }
     }, {

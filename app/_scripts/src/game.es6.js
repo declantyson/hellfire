@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.12
- *	10/09/2016
+ *	v0.0.18
+ *	16/09/2016
  *
  */
 
@@ -21,6 +21,14 @@ class Game {
             jump  : 38,
             right : 39
         };
+        this.startingStockCount = 4;
+    }
+
+    gameOver() {
+        setTimeout(function () {
+            // TODO: Go to victory screen
+            clearInterval(window.player);
+        }, 100);
     }
 }
 
@@ -30,8 +38,7 @@ class Scene {
         this.stage = stage;
         this.playerOne = playerOne;
 
-        // this.draw();
-        setInterval(this.draw.bind(this), 1000 / this.game.fps);
+        window.player = setInterval(this.draw.bind(this), 1000 / this.game.fps);
     }
 
     draw() {
@@ -44,6 +51,7 @@ class Scene {
 
         this.drawStageFloors(pre_ctx);
         this.drawCharacters(pre_ctx);
+        this.drawCharacterStocks(pre_ctx);
         this.characterActions(this.playerOne);
 
         this.game.ctx.drawImage(pre_canvas, 0, 0);
@@ -56,6 +64,15 @@ class Scene {
             pre_ctx.moveTo(floor.x, floor.y);
             pre_ctx.lineTo(floor.x + floor.width, floor.y);
             pre_ctx.stroke();
+        }
+    }
+
+    drawCharacterStocks(pre_ctx) {
+        var stockIcon = this.playerOne.stockIcon;
+        for (var i = 0; i < this.playerOne.stocks; i++) {
+            var img = document.createElement('img');
+            img.setAttribute("src", "/stock-icons/" + this.playerOne.id + ".png");
+            pre_ctx.drawImage(img, (32 + 40 * i), 32);
         }
     }
 

@@ -8,8 +8,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.29
- *	13/09/2016
+ *	v0.0.39
+ *	16/09/2016
  *
  */
 
@@ -18,12 +18,16 @@ var Character = function () {
         _classCallCheck(this, Character);
 
         this.game = game;
+        this.startPosX = startPosX;
+        this.startPosY = startPosY;
+        this.stocks = this.game.startingStockCount;
     }
 
     _createClass(Character, [{
         key: "initialise",
         value: function initialise(opts) {
             // attributes
+            this.id = opts.id;
             this.name = opts.name;
             this.maxSpeed = opts.maxSpeed / this.game.fps;
             this.acceleration = opts.acceleration;
@@ -80,6 +84,24 @@ var Character = function () {
                 }
             } else {
                 this.jumpHeld = false;
+            }
+
+            if (this.hurtboxes[0].x < 0 || this.hurtboxes[0].y < 0 || this.hurtboxes[0].x > this.game.canvas.width || this.hurtboxes[0].y > this.game.canvas.height) {
+                this.loseStock();
+            }
+        }
+    }, {
+        key: "loseStock",
+        value: function loseStock() {
+            this.stocks--;
+
+            if (this.stocks <= 0) {
+                this.game.gameOver();
+            } else {
+                console.log("Resetting...");
+                this.hurtboxes[0].x = this.startPosX;
+                this.hurtboxes[0].y = this.startPosY;
+                this.currentSpeed = 0;
             }
         }
     }, {
@@ -138,7 +160,6 @@ var Character = function () {
                 return;
             }
 
-            console.log(this.currentFallSpeed);
             if (this.currentFallSpeed > 0) {
                 this.jumping = false;
             }

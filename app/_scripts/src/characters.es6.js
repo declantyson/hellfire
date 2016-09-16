@@ -2,18 +2,22 @@
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.32
- *	13/09/2016
+ *	v0.0.39
+ *	16/09/2016
  *
  */
 
 class Character {
     constructor(game, startPosY, startPosX) {
         this.game = game;
+        this.startPosX = startPosX;
+        this.startPosY = startPosY;
+        this.stocks = this.game.startingStockCount;
     }
 
     initialise(opts) {
         // attributes
+        this.id = opts.id;
         this.name = opts.name;
         this.maxSpeed = opts.maxSpeed / this.game.fps;
         this.acceleration = opts.acceleration;
@@ -78,6 +82,23 @@ class Character {
         } else {
             this.jumpHeld = false;
         }
+
+        if(this.hurtboxes[0].x < 0 || this.hurtboxes[0].y < 0 || this.hurtboxes[0].x > this.game.canvas.width || this.hurtboxes[0].y > this.game.canvas.height) {
+            this.loseStock();
+        }
+    }
+
+    loseStock() {
+        this.stocks--;
+
+        if(this.stocks <= 0) {
+            this.game.gameOver();
+        } else {
+            console.log("Resetting...");
+            this.hurtboxes[0].x = this.startPosX;
+            this.hurtboxes[0].y = this.startPosY;
+            this.currentSpeed = 0;
+        }
     }
 
     move() {
@@ -131,7 +152,6 @@ class Character {
             return;
         }
 
-        console.log(this.currentFallSpeed);
         if(this.currentFallSpeed > 0) {
             this.jumping = false;
         }

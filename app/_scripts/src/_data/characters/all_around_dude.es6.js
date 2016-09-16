@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.7
- *	13/09/2016
+ *	v0.0.9
+ *	16/09/2016
  *
  */
 
@@ -11,6 +11,7 @@ class AllAroundDude extends Character {
     constructor(game, startPosY, startPosX) {
         super(game, startPosY, startPosX);
         var opts = {
+            id: "AllAroundDude",
             name: "All Around Dude",
             maxSpeed: 400,
             acceleration: 2,
