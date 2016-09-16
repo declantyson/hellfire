@@ -2,7 +2,7 @@
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.32
+ *	v0.0.37
  *	16/09/2016
  *
  */
@@ -106,6 +106,15 @@ class Scene {
     drawHitboxes(pre_ctx, character) {
         for (var h = 0; h < character.visibleHitboxes.length; h++) {
             var hitbox = character.visibleHitboxes[h];
+            hitbox.currentFrame++;
+            if(hitbox.currentFrame >= hitbox.startFrame && hitbox.currentFrame <= hitbox.endFrame) {
+                hitbox.active = true;
+            } else if(hitbox.currentFrame > hitbox.endFrame) {
+                hitbox.active = false;
+            }
+
+            if(!hitbox.active) return;
+
             var baseHurtbox = character.hurtboxes[0];
             var baseX = baseHurtbox.x;
             if(character.currentDir == 1) {

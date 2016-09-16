@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.92
+ *	v0.0.104
  *	16/09/2016
  *
  */
@@ -43,13 +43,13 @@ var Character = function () {
             this.jumpThreshold = opts.jumpThreshold;
 
             // state
+            this.keysHeld = {};
             this.currentSpeed = 0;
             this.currentFallSpeed = 0;
             this.currentDir = opts.currentDir;
             this.currentVerticalDir = 1;
             this.jumpStart = this.hurtboxes[0].y;
             this.jumpsRemaining = opts.allowedJumps;
-            this.jumpHeld = false;
             this.jumping = false;
             this.stun = false;
             this.invulnerable = false;
@@ -59,10 +59,21 @@ var Character = function () {
         key: "drawActions",
         value: function drawActions(stage) {
             this.fall(stage.gravity, stage.floors);
-            this.visibleHitboxes = [];
 
             if (this.game.currentKeys[this.keyBindings.basicAttack] && !this.stun) {
-                this.visibleHitboxes = this.hitboxes.basicAttack;
+                if (this.keysHeld[this.keyBindings.basicAttack] === false) {
+                    this.keysHeld[this.keyBindings.basicAttack] = true;
+                    if (this.hitboxes.basicAttack[0].currentFrame > this.hitboxes.basicAttack[0].endFrame + this.hitboxes.basicAttack[0].cooldown) {
+                        this.hitboxes.basicAttack[0].currentFrame = 0;
+                    }
+                }
+                if (this.hitboxes.basicAttack[0].currentFrame > this.hitboxes.basicAttack[0].endFrame + this.hitboxes.basicAttack[0].cooldown) {
+                    if (this.keysHeld[this.keyBindings.basicAttack] === false) this.hitboxes.basicAttack[0].currentFrame = 0;
+                } else {
+                    this.visibleHitboxes = this.hitboxes.basicAttack;
+                }
+            } else {
+                this.keysHeld[this.keyBindings.basicAttack] = false;
             }
 
             if (this.stun) {
@@ -104,7 +115,7 @@ var Character = function () {
                         if (this === character) continue;
                         for (var hit = 0; hit < character.visibleHitboxes.length; hit++) {
                             var hitbox = character.visibleHitboxes[hit];
-                            if (hurtbox.x < hitbox.calculatedX + hitbox.width && hurtbox.x + hurtbox.width > hitbox.calculatedX && hurtbox.y - hurtbox.height < character.hurtboxes[0].y - hitbox.yOffset && hurtbox.y > character.hurtboxes[0].y - hitbox.yOffset - hitbox.height) {
+                            if (hitbox.active && hurtbox.x < hitbox.calculatedX + hitbox.width && hurtbox.x + hurtbox.width > hitbox.calculatedX && hurtbox.y - hurtbox.height < character.hurtboxes[0].y - hitbox.yOffset && hurtbox.y > character.hurtboxes[0].y - hitbox.yOffset - hitbox.height) {
                                 this.getHit(hitbox);
                                 break;
                             }
@@ -270,7 +281,7 @@ var Hurtbox = function Hurtbox(x, y, width, height) {
     this.height = height;
 };
 
-var Hitbox = function Hitbox(xOffset, yOffset, width, height, damage, angle, knockback, growth, hitstun) {
+var Hitbox = function Hitbox(xOffset, yOffset, width, height, damage, angle, knockback, growth, hitstun, startFrame, endFrame, cooldown) {
     _classCallCheck(this, Hitbox);
 
     this.xOffset = xOffset;
@@ -282,6 +293,12 @@ var Hitbox = function Hitbox(xOffset, yOffset, width, height, damage, angle, kno
     this.knockback = knockback;
     this.growth = growth;
     this.dir = 1;
+    this.startFrame = startFrame;
+    this.endFrame = endFrame;
+    this.cooldown = cooldown;
+    this.currentFrame = 0;
+    this.active = false;
+
     var hitstunFrames = hitstun || 60;
     this.hitstun = hitstunFrames / 60 * 1000;
 };
