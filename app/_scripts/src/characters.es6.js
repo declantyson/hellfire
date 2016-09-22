@@ -2,7 +2,7 @@
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.105
+ *	v0.0.106
  *	16/09/2016
  *
  */
@@ -119,6 +119,7 @@ class Character {
                             (hurtbox.y - hurtbox.height < character.hurtboxes[0].y - hitbox.yOffset &&
                             hurtbox.y > character.hurtboxes[0].y - hitbox.yOffset - hitbox.height)
                         ) {
+                            this.jumpStart = this.hurtboxes[0].y;
                             this.getHit(hitbox);
                             break;
                         }
@@ -149,7 +150,7 @@ class Character {
         this.currentVerticalDir = -1;
         this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback;
 
-        this.currentDir = (this.currentDir * hitbox.dir);
+        this.currentDir = hitbox.dir;
         this.currentSpeed = (1 / angleToSpeedModifier) * hitbox.knockback;
 
         //this.stun = true;

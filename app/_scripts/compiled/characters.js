@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.104
+ *	v0.0.106
  *	16/09/2016
  *
  */
@@ -116,6 +116,7 @@ var Character = function () {
                         for (var hit = 0; hit < character.visibleHitboxes.length; hit++) {
                             var hitbox = character.visibleHitboxes[hit];
                             if (hitbox.active && hurtbox.x < hitbox.calculatedX + hitbox.width && hurtbox.x + hurtbox.width > hitbox.calculatedX && hurtbox.y - hurtbox.height < character.hurtboxes[0].y - hitbox.yOffset && hurtbox.y > character.hurtboxes[0].y - hitbox.yOffset - hitbox.height) {
+                                this.jumpStart = this.hurtboxes[0].y;
                                 this.getHit(hitbox);
                                 break;
                             }
@@ -148,7 +149,7 @@ var Character = function () {
             this.currentVerticalDir = -1;
             this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback;
 
-            this.currentDir = this.currentDir * hitbox.dir;
+            this.currentDir = hitbox.dir;
             this.currentSpeed = 1 / angleToSpeedModifier * hitbox.knockback;
 
             //this.stun = true;
