@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.43
+ *	v0.0.45
  *	23/09/2016
  *
  */
@@ -51,7 +51,10 @@ var Player = function Player(character, keys) {
         left: keys.left,
         jump: keys.jump,
         right: keys.right,
-        basicAttack: keys.basicAttack
+        attacks: {
+            basicAttack: keys.basicAttack,
+            strongAttack: keys.strongAttack
+        }
     };
 };
 
@@ -152,6 +155,8 @@ var Scene = function () {
                 var baseX = baseHurtbox.x;
                 if (character.currentDir == 1) {
                     baseX += baseHurtbox.width;
+                } else {
+                    baseX -= baseHurtbox.width;
                 }
 
                 hitbox.dir = character.currentDir;

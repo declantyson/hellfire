@@ -2,7 +2,7 @@
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.43
+ *	v0.0.45
  *	23/09/2016
  *
  */
@@ -37,7 +37,10 @@ class Player {
             left  : keys.left,
             jump  : keys.jump,
             right : keys.right,
-            basicAttack : keys.basicAttack
+            attacks: {
+                basicAttack: keys.basicAttack,
+                strongAttack: keys.strongAttack
+            }
         };
     }
 }
@@ -129,6 +132,8 @@ class Scene {
             var baseX = baseHurtbox.x;
             if(character.currentDir == 1) {
                 baseX += baseHurtbox.width;
+            } else {
+                baseX -= baseHurtbox.width;
             }
 
             hitbox.dir = character.currentDir;
