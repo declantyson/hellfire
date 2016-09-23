@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Characters/AllAroundDude
  *	XL Gaming/Declan Tyson
- *	v0.0.18
- *	16/09/2016
+ *	v0.0.23
+ *	23/09/2016
  *
  */
 
@@ -22,7 +22,8 @@ class AllAroundDude extends Character {
             ],
             hitboxes: {
                 basicAttack: [
-                    new Hitbox(15, 20, 5, 5, 0, 45, 5, 0, 60, 8, 20, 7)
+                    new Hitbox({ name: "first", xOffset: 15, yOffset: 20, width: 5, height: 5, damage: 4, angle: 35, knockback: 2, growth: 0, hitstun: 60, startFrame: 8, endFrame: 14,  cooldown: 14}),
+                    new Hitbox({ name: "extended", xOffset: 20, yOffset: 25, width: 10, height: 10, damage: 5, angle: 35, knockback: 2, growth: 0, hitstun: 25, startFrame: 14, endFrame: 21,  cooldown: 7})
                 ]
             },
             turnDelay: 0.15,

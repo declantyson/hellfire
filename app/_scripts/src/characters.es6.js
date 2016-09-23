@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Characters
  *	XL Gaming/Declan Tyson
- *	v0.0.106
- *	16/09/2016
+ *	v0.0.113
+ *	23/09/2016
  *
  */
 
@@ -42,26 +42,32 @@ class Character {
         this.jumpsRemaining = opts.allowedJumps;
         this.jumping = false;
         this.stun = false;
+        this.attacking = false;
         this.invulnerable = false;
         this.visibleHitboxes = [];
+
+        this.damage = 0;
     }
     
     drawActions(stage) {
         this.fall(stage.gravity, stage.floors);
+        this.visibleHitboxes = [];
 
         if(this.game.currentKeys[this.keyBindings.basicAttack] && !this.stun) {
-            if(this.keysHeld[this.keyBindings.basicAttack] === false) {
-                this.keysHeld[this.keyBindings.basicAttack] = true;
-                if(this.hitboxes.basicAttack[0].currentFrame > this.hitboxes.basicAttack[0].endFrame + this.hitboxes.basicAttack[0].cooldown) {
-                    this.hitboxes.basicAttack[0].currentFrame = 0;
-                }
-            }
-            if(this.hitboxes.basicAttack[0].currentFrame > this.hitboxes.basicAttack[0].endFrame + this.hitboxes.basicAttack[0].cooldown) {
-                if(this.keysHeld[this.keyBindings.basicAttack] === false) this.hitboxes.basicAttack[0].currentFrame = 0;
-            } else {
-                this.visibleHitboxes = this.hitboxes.basicAttack;
+            if(!this.attacking) this.attacking = true;
+            for(var i = 0; i < this.hitboxes.basicAttack.length; i++) {
+                this.visibleHitboxes.push(this.hitboxes.basicAttack[i]);
             }
         } else {
+            for(var i = 0; i < this.hitboxes.basicAttack.length; i++) {
+                if (this.hitboxes.basicAttack[i].currentFrame > this.hitboxes.basicAttack[i].endFrame + this.hitboxes.basicAttack[i].cooldown) {
+                    this.hitboxes.basicAttack[i].currentFrame = 0;
+                    this.attacking = false;
+                }
+                if(this.attacking) {
+                    this.visibleHitboxes.push(this.hitboxes.basicAttack[i]);
+                }
+            }
             this.keysHeld[this.keyBindings.basicAttack] = false;
         }
 
@@ -135,6 +141,7 @@ class Character {
 
     loseStock() {
         this.stocks--;
+        this.damage = 0;
         if(this.stocks <= 0) {
             this.game.gameOver();
         } else {
@@ -148,7 +155,10 @@ class Character {
         var angleToSpeedModifier = hitbox.angle / 45;
 
         this.currentVerticalDir = -1;
-        this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback;
+        this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback * (1 + (this.damage/100));
+
+        this.damage += hitbox.damage;
+        console.log(this.damage, hitbox.damage);
 
         this.currentDir = hitbox.dir;
         this.currentSpeed = (1 / angleToSpeedModifier) * hitbox.knockback;
@@ -281,23 +291,25 @@ class Hurtbox {
 }
 
 class Hitbox {
-    constructor(xOffset, yOffset, width, height, damage, angle, knockback, growth, hitstun, startFrame, endFrame, cooldown) {
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-        this.width = width;
-        this.height = height;
-        this.damage = damage;
-        this.angle = angle;
-        this.knockback = knockback;
-        this.growth = growth;
+    constructor(opts) {
+        this.xOffset = opts.xOffset;
+        this.yOffset = opts.yOffset;
+        this.width = opts.width;
+        this.height = opts.height;
+        this.damage = opts.damage;
+        this.angle = opts.angle;
+        this.knockback = opts.knockback;
+        this.growth = opts.growth;
+        this.startFrame = opts.startFrame;
+        this.endFrame = opts.endFrame;
+        this.cooldown = opts.cooldown;
+
+        this.name = opts.name;
+
         this.dir = 1;
-        this.startFrame = startFrame;
-        this.endFrame = endFrame;
-        this.cooldown = cooldown;
         this.currentFrame = 0;
         this.active = false;
-
-        let hitstunFrames = hitstun || 60;
+        let hitstunFrames = opts.hitstun || 60;
         this.hitstun = (hitstunFrames / 60) * 1000;
     }
 }

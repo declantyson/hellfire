@@ -2,8 +2,8 @@
  *
  *	XL Platform Fighter/Game
  *	XL Gaming/Declan Tyson
- *	v0.0.37
- *	16/09/2016
+ *	v0.0.43
+ *	23/09/2016
  *
  */
 
@@ -62,6 +62,7 @@ class Scene {
 
         this.drawStageFloors(pre_ctx);
         this.drawCharacters(pre_ctx);
+        this.drawCharacterDamage(pre_ctx);
         this.drawCharacterStocks(pre_ctx);
         for(var i = 0; i < this.players.length; i++) {
             this.characterActions(this.players[i].character);
@@ -81,11 +82,20 @@ class Scene {
         }
     }
 
+    drawCharacterDamage(pre_ctx) {
+        pre_ctx.font = "Helvetica Neue Light 20px";
+        for (var p = 0; p < this.players.length; p++) {
+            pre_ctx.fillText(this.players[p].character.damage + "%", (p * 200) + 32, 90);
+        }
+    }
+
     drawCharacterStocks(pre_ctx) {
-        for (var i = 0; i < this.players[0].character.stocks; i++) {
-            var img = document.createElement('img');
-            img.setAttribute("src", "/stock-icons/" + this.players[0].character.id + ".png");
-            pre_ctx.drawImage(img, (32 + 40 * i), 32);
+        for (var p = 0; p < this.players.length; p++) {
+            for (var i = 0; i < this.players[p].character.stocks; i++) {
+                var img = document.createElement('img');
+                img.setAttribute("src", "/stock-icons/" + this.players[p].character.id + ".png");
+                pre_ctx.drawImage(img, (p * 200) + 32 + (40 * i), 32);
+            }
         }
     }
 
@@ -113,7 +123,7 @@ class Scene {
                 hitbox.active = false;
             }
 
-            if(!hitbox.active) return;
+            if(!hitbox.active) continue;
 
             var baseHurtbox = character.hurtboxes[0];
             var baseX = baseHurtbox.x;
