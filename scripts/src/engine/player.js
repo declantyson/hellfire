@@ -11,13 +11,13 @@ class Player {
   constructor(character, keys) {
     this.character = character;
     this.character.keyBindings = {
-      left  : keys.left,
-      jump  : keys.jump,
-      right : keys.right,
+      left: keys.left,
+      jump: keys.jump,
+      right: keys.right,
       attacks: {
         basicAttack: keys.basicAttack,
-        strongAttack: keys.strongAttack
-      }
+        strongAttack: keys.strongAttack,
+      },
     };
   }
 }

@@ -8,12 +8,12 @@
  */
 
 class Stage {
-    constructor(game, name, floors, gravity) {
-        this.game = game;
-        this.name = name;
-        this.floors = floors;
-        this.gravity = gravity / this.game.fps;
-    }
+  constructor(game, name, floors, gravity) {
+    this.game = game;
+    this.name = name;
+    this.floors = floors;
+    this.gravity = gravity / this.game.fps;
+  }
 }
 
 export default Stage;

@@ -7,13 +7,13 @@
  *
  */
 
-document.onkeydown = function (e) {
-  if(!window.game.currentKeys[e.keyCode]) {
+document.onkeydown = function(e) {
+  if (!window.game.currentKeys[e.keyCode]) {
     window.game.keyChanged = true;
     window.game.currentKeys[e.keyCode] = true;
   }
 };
 
-document.onkeyup = function (e) {
+document.onkeyup = function(e) {
   window.game.currentKeys[e.keyCode] = false;
 };

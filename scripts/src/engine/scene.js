@@ -14,7 +14,7 @@ class Scene {
     this.players = players;
 
     this.game.players = players;
-    window.drawScene = setInterval(this.draw.bind(this), 1000 / this.game.fps);
+    this.draw();
   }
 
   draw() {
@@ -30,12 +30,14 @@ class Scene {
     this.drawCharacters(pre_ctx);
     this.drawCharacterDamage(pre_ctx);
     this.drawCharacterStocks(pre_ctx);
-    for(let i = 0; i < this.players.length; i++) {
+    for (let i = 0; i < this.players.length; i++) {
       this.characterActions(this.players[i].character);
       this.drawHitboxes(pre_ctx, this.players[i].character);
     }
 
     this.game.ctx.drawImage(pre_canvas, 0, 0);
+
+    window.requestAnimationFrame(this.draw.bind(this));
   }
 
   drawStageFloors(pre_ctx) {
@@ -49,20 +51,18 @@ class Scene {
   }
 
   drawCharacterDamage(pre_ctx) {
-    pre_ctx.font = "Helvetica Neue Light 20px";
+    pre_ctx.font = 'Helvetica Neue Light 20px';
     for (let p = 0; p < this.players.length; p++) {
-      pre_ctx.fillText(this.players[p].character.damage + "%", (p * 200) + 32, 90);
+      pre_ctx.fillText(this.players[p].character.damage + '%', p * 200 + 32, 90);
     }
   }
 
   drawCharacterStocks(pre_ctx) {
-    for (let p = 0; p < this.players.length; p++) {
-      for (let i = 0; i < this.players[p].character.stocks; i++) {
-        let img = document.createElement('img');
-        img.setAttribute("src", "/stock-icons/" + this.players[p].character.id + ".png");
-        pre_ctx.drawImage(img, (p * 200) + 32 + (40 * i), 32);
+    this.players.forEach((player, p) => {
+      for(let i = 0; i < player.character.stocks; i++) {
+       pre_ctx.drawImage(player.character.stockIcon, p * 200 + 32 + 40 * i, 32);
       }
-    }
+    });
   }
 
   drawCharacters(pre_ctx) {
@@ -71,14 +71,13 @@ class Scene {
         let character = this.players[i].character;
         let hurtbox = character.hurtboxes[h];
         //pre_ctx.rect(hurtbox.x, hurtbox.y - hurtbox.height, hurtbox.width, hurtbox.height);
-        let img = document.createElement('img');
-        let direction = "right";
-        if(character.currentDir !== 1) {
-          direction = "left";
+
+        let direction = 'right';
+        if (character.currentDir !== 1) {
+          direction = 'left';
         }
 
-        img.setAttribute("src", "/sprites/" + character.id + "_s_" + direction + ".png");
-        pre_ctx.drawImage(img, hurtbox.x, hurtbox.y - hurtbox.height, hurtbox.width, hurtbox.height);
+        pre_ctx.drawImage(character.sprite, hurtbox.x, hurtbox.y - hurtbox.height, hurtbox.width, hurtbox.height);
         pre_ctx.stroke();
       }
     }
@@ -92,29 +91,29 @@ class Scene {
     for (let h = 0; h < character.visibleHitboxes.length; h++) {
       let hitbox = character.visibleHitboxes[h];
       hitbox.currentFrame++;
-      if(hitbox.currentFrame >= hitbox.startFrame && hitbox.currentFrame <= hitbox.endFrame) {
+      if (hitbox.currentFrame >= hitbox.startFrame && hitbox.currentFrame <= hitbox.endFrame) {
         hitbox.active = true;
-      } else if(hitbox.currentFrame > hitbox.endFrame) {
+      } else if (hitbox.currentFrame > hitbox.endFrame) {
         hitbox.active = false;
       }
 
-      if(!hitbox.active) continue;
+      if (!hitbox.active) continue;
 
       let baseHurtbox = character.hurtboxes[0];
       let baseX = baseHurtbox.x;
-      if(character.currentDir === 1) {
+      if (character.currentDir === 1) {
         baseX += baseHurtbox.width;
       } else {
         baseX -= baseHurtbox.width;
       }
 
       hitbox.dir = character.currentDir;
-      hitbox.calculatedX = baseX + (hitbox.xOffset * character.currentDir);
+      hitbox.calculatedX = baseX + hitbox.xOffset * character.currentDir;
 
-      pre_ctx.strokeStyle = "#FF0000";
+      pre_ctx.strokeStyle = '#FF0000';
       pre_ctx.rect(hitbox.calculatedX, baseHurtbox.y - hitbox.yOffset, hitbox.width, hitbox.height);
       pre_ctx.stroke();
-      pre_ctx.strokeStyle = "#000000";
+      pre_ctx.strokeStyle = '#000000';
     }
   }
 }

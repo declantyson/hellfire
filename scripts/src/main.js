@@ -23,17 +23,4 @@ import AllAroundDude from './fighters/all_around_dude';
 // Demo stages
 import BasicStage from './stages/basic';
 
-export {
-  Fighter,
-  Floor,
-  Game,
-  Hitbox,
-  Hurtbox,
-  Player,
-  Scene,
-  Stage,
-
-  AllAroundDude,
-
-  BasicStage
-};
+export { Fighter, Floor, Game, Hitbox, Hurtbox, Player, Scene, Stage, AllAroundDude, BasicStage };
