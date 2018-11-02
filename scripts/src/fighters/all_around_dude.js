@@ -1,16 +1,20 @@
 /*
  *
- *	XL Platform Fighter/Characters/AllAroundDude
- *	XL Gaming/Declan Tyson
- *	v0.0.25
- *	23/09/2016
+ *	Hellfire/Characters/AllAroundDude
+ *	Declan Tyson
+ *	v0.0.120
+ *	02/11/2018
  *
  */
 
-class AllAroundDude extends Character {
+import Fighter from '../engine/fighter';
+import Hitbox from '../engine/hitbox';
+import Hurtbox from '../engine/hurtbox';
+
+class AllAroundDude extends Fighter {
     constructor(game, startPosX, startPosY) {
         super(game, startPosX, startPosY);
-        var opts = {
+        const opts = {
             id: "AllAroundDude",
             name: "All Around Dude",
             maxSpeed: 400,
@@ -18,7 +22,7 @@ class AllAroundDude extends Character {
             deceleration:1,
             currentDir: 1,
             hurtboxes: [
-                new Hurtbox(startPosX, startPosY, 15, 35)
+                new Hurtbox(startPosX, startPosY, 18, 34)
             ],
             hitboxes: {
                 basicAttack: [
@@ -49,3 +53,5 @@ class AllAroundDude extends Character {
         super.drawActions(stage);
     }
 }
+
+export default AllAroundDude;

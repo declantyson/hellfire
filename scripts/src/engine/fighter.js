@@ -1,13 +1,13 @@
 /*
  *
- *	XL Platform Fighter/Characters
- *	XL Gaming/Declan Tyson
- *	v0.0.118
- *	23/09/2016
+ *	Hellfire/Fighter
+ *	Declan Tyson
+ *	v0.0.120
+ *	02/11/2018
  *
  */
 
-class Character {
+class Fighter {
     constructor(game, startPosX, startPosY) {
         this.game = game;
         this.startPosX = startPosX;
@@ -53,15 +53,15 @@ class Character {
         this.fall(stage.gravity, stage.floors);
         this.visibleHitboxes = [];
 
-        for(var key in this.keyBindings.attacks) {
+        for(let key in this.keyBindings.attacks) {
             if (this.game.currentKeys[this.keyBindings.attacks[key]] && !this.stun) {
                 if (this.currentAttack === -1) this.currentAttack = this.keyBindings.attacks[key];
                 if (this.currentAttack !== this.keyBindings.attacks[key]) continue;
-                for (var i = 0; i < this.hitboxes[key].length; i++) {
+                for (let i = 0; i < this.hitboxes[key].length; i++) {
                     this.visibleHitboxes.push(this.hitboxes[key][i]);
                 }
             } else {
-                for (var i = 0; i < this.hitboxes[key].length; i++) {
+                for (let i = 0; i < this.hitboxes[key].length; i++) {
                     if (this.hitboxes[key][i].currentFrame > this.hitboxes[key][i].endFrame + this.hitboxes[key][i].cooldown) {
                         this.hitboxes[key][i].currentFrame = 0;
                         this.currentAttack = -1;
@@ -114,13 +114,13 @@ class Character {
         }
 
         if(!this.invulnerable) {
-            for (var hurt = 0; hurt < this.hurtboxes.length; hurt++) {
-                var hurtbox = this.hurtboxes[hurt];
-                for (var c = 0; c < this.game.players.length; c++) {
-                    var character = this.game.players[c].character;
+            for (let hurt = 0; hurt < this.hurtboxes.length; hurt++) {
+              let hurtbox = this.hurtboxes[hurt];
+                for (let c = 0; c < this.game.players.length; c++) {
+                  let character = this.game.players[c].character;
                     if (this === character) continue;
-                    for (var hit = 0; hit < character.visibleHitboxes.length; hit++) {
-                        var hitbox = character.visibleHitboxes[hit];
+                    for (let hit = 0; hit < character.visibleHitboxes.length; hit++) {
+                      let hitbox = character.visibleHitboxes[hit];
                         if (
                             hitbox.active &&
                             (hurtbox.x < hitbox.calculatedX + hitbox.width &&
@@ -155,7 +155,7 @@ class Character {
     }
 
     getHit(hitbox) {
-        var angleToSpeedModifier = hitbox.angle / 45;
+        const angleToSpeedModifier = hitbox.angle / 45;
 
         this.currentVerticalDir = -1;
         this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback * (1 + (this.damage/100));
@@ -168,7 +168,7 @@ class Character {
         //this.stun = true;
         this.invulnerable = true;
 
-        var character = this;
+        let character = this;
         setTimeout(function () {
             character.invulnerable = false;
         }, 100);
@@ -183,10 +183,10 @@ class Character {
     }
 
     move() {
-        var maxMovementSpeed = this.maxSpeed;
+        let maxMovementSpeed = this.maxSpeed;
         if(this.currentFallSpeed > 0) maxMovementSpeed = this.airSpeed;
 
-        var acceleration = maxMovementSpeed / (this.acceleration * this.game.fps);
+        let acceleration = maxMovementSpeed / (this.acceleration * this.game.fps);
         if(this.currentSpeed < maxMovementSpeed) {
             this.currentSpeed += acceleration;
         }
@@ -197,7 +197,7 @@ class Character {
     }
 
     stop() {
-        var deceleration = this.maxSpeed / (this.deceleration * this.game.fps);
+        let deceleration = this.maxSpeed / (this.deceleration * this.game.fps);
         if(this.currentFallSpeed > 0) {
             deceleration = deceleration / 3;
         }
@@ -237,7 +237,7 @@ class Character {
             this.jumping = false;
         }
 
-        var hitFloor = false;
+        let hitFloor = false;
 
         for(let h = 0; h < this.hurtboxes.length; h++) {
             let hurtbox = this.hurtboxes[h];
@@ -283,35 +283,4 @@ class Character {
     }
 }
 
-class Hurtbox {
-    constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-    }
-}
-
-class Hitbox {
-    constructor(opts) {
-        this.xOffset = opts.xOffset;
-        this.yOffset = opts.yOffset;
-        this.width = opts.width;
-        this.height = opts.height;
-        this.damage = opts.damage;
-        this.angle = opts.angle;
-        this.knockback = opts.knockback;
-        this.growth = opts.growth;
-        this.startFrame = opts.startFrame;
-        this.endFrame = opts.endFrame;
-        this.cooldown = opts.cooldown;
-
-        this.name = opts.name;
-
-        this.dir = 1;
-        this.currentFrame = 0;
-        this.active = false;
-        let hitstunFrames = opts.hitstun || 60;
-        this.hitstun = (hitstunFrames / 60) * 1000;
-    }
-}
+export default Fighter;

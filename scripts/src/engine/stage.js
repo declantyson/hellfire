@@ -1,9 +1,9 @@
 /*
  *
- *	XL Platform Fighter/Stages
- *	XL Gaming/Declan Tyson
- *	v0.0.3
- *	10/09/2016
+ *	Hellfire/Stage
+ *	Declan Tyson
+ *	v0.0.120
+ *	02/11/2018
  *
  */
 
@@ -16,10 +16,4 @@ class Stage {
     }
 }
 
-class Floor {
-    constructor(x, y, width) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-    }
-}
+export default Stage;
