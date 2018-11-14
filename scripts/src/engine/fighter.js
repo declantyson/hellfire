@@ -2,7 +2,7 @@
  *
  *	Hellfire/Fighter
  *	Declan Tyson
- *	v0.0.121
+ *	v0.0.122
  *	14/11/2018
  *
  */
@@ -46,7 +46,7 @@ class Fighter {
     this.invulnerable = false;
     this.visibleHitboxes = [];
 
-    this.damage = 90;
+    this.damage = 0;
 
     //TODO spritemaps
     let spriteSrc = `/sprites/${this.id}_s_${this.currentDir}.png`;
@@ -102,18 +102,19 @@ class Fighter {
       if (this.jumpHeld) return;
       this.jumpHeld = true;
       if (this.jumpsRemaining > 0) {
+
+
         if (
-          (this.currentVerticalDir === -1 &&
-            this.jumpsRemaining < this.allowedJumps &&
-            this.hurtboxes[0].y > this.jumpStart - this.jumpThreshold.up) ||
-          (this.currentVerticalDir === 1 &&
-            this.jumpsRemaining < this.allowedJumps &&
-            this.hurtboxes[0].y > this.jumpStart - this.jumpThreshold.down)
+
+            this.jumpsRemaining === 0
+
         ) {
           return;
         }
+
         this.jumpStart = this.hurtboxes[0].y;
         this.currentVerticalDir = -1;
+        this.currentFallSpeed = 0;
         this.jumpsRemaining--;
       }
     } else {

@@ -2,7 +2,7 @@
  *
  *	Hellfire/Characters/AllAroundDude
  *	Declan Tyson
- *	v0.0.121
+ *	v0.0.122
  *	14/11/2018
  *
  */
@@ -17,8 +17,8 @@ class AllAroundDude extends Fighter {
     const opts = {
       id: 'AllAroundDude',
       name: 'All Around Dude',
-      maxSpeed: 400,
-      acceleration: 2,
+      maxSpeed: 200,
+      acceleration: 0.5,
       deceleration: 1,
       currentDir: 1,
       hurtboxes: [new Hurtbox(startPosX, startPosY, 18, 34)],
@@ -95,8 +95,8 @@ class AllAroundDude extends Fighter {
       jumpHeight: 10,
       allowedJumps: 2,
       jumpThreshold: {
-        up: 5,
-        down: 15,
+        up: 0,
+        down: 0,
       },
     };
 

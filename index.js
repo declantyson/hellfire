@@ -2,7 +2,7 @@
  *
  *	Hellfire/Fighter
  *	Declan Tyson
- *	v0.0.121
+ *	v0.0.122
  *	14/11/2018
  *
  */
@@ -46,7 +46,7 @@ class Fighter {
     this.invulnerable = false;
     this.visibleHitboxes = [];
 
-    this.damage = 90;
+    this.damage = 0;
 
     //TODO spritemaps
     let spriteSrc = `/sprites/${this.id}_s_${this.currentDir}.png`;
@@ -102,18 +102,19 @@ class Fighter {
       if (this.jumpHeld) return;
       this.jumpHeld = true;
       if (this.jumpsRemaining > 0) {
+
+
         if (
-          (this.currentVerticalDir === -1 &&
-            this.jumpsRemaining < this.allowedJumps &&
-            this.hurtboxes[0].y > this.jumpStart - this.jumpThreshold.up) ||
-          (this.currentVerticalDir === 1 &&
-            this.jumpsRemaining < this.allowedJumps &&
-            this.hurtboxes[0].y > this.jumpStart - this.jumpThreshold.down)
+
+            this.jumpsRemaining === 0
+
         ) {
           return;
         }
+
         this.jumpStart = this.hurtboxes[0].y;
         this.currentVerticalDir = -1;
+        this.currentFallSpeed = 0;
         this.jumpsRemaining--;
       }
     } else {
@@ -587,7 +588,7 @@ class Stage {
  *
  *	Hellfire/Characters/AllAroundDude
  *	Declan Tyson
- *	v0.0.121
+ *	v0.0.122
  *	14/11/2018
  *
  */
@@ -598,8 +599,8 @@ class AllAroundDude extends Fighter {
     const opts = {
       id: 'AllAroundDude',
       name: 'All Around Dude',
-      maxSpeed: 400,
-      acceleration: 2,
+      maxSpeed: 200,
+      acceleration: 0.5,
       deceleration: 1,
       currentDir: 1,
       hurtboxes: [new Hurtbox(startPosX, startPosY, 18, 34)],
@@ -676,8 +677,8 @@ class AllAroundDude extends Fighter {
       jumpHeight: 10,
       allowedJumps: 2,
       jumpThreshold: {
-        up: 5,
-        down: 15,
+        up: 0,
+        down: 0,
       },
     };
 
@@ -695,14 +696,14 @@ class AllAroundDude extends Fighter {
  *
  *	Hellfire/Characters/AllAroundDude
  *	Declan Tyson
- *	v0.0.120
- *	02/11/2018
+ *	v0.0.122
+ *	14/11/2018
  *
  */
 
 class BasicStage extends Stage {
   constructor(game) {
-    super(game, 'Basic Stage', [new Floor(100, 350, 600), new Floor(50, 250, 100), new Floor(650, 250, 100)], 1000);
+    super(game, 'Basic Stage', [new Floor(100, 350, 600), new Floor(50, 250, 100), new Floor(650, 250, 100), new Floor(250, 150, 100)], 1000);
   }
 }
 
