@@ -2,8 +2,8 @@
  *
  *	Hellfire/Fighter
  *	Declan Tyson
- *	v0.0.120
- *	02/11/2018
+ *	v0.0.121
+ *	14/11/2018
  *
  */
 
@@ -46,7 +46,7 @@ class Fighter {
     this.invulnerable = false;
     this.visibleHitboxes = [];
 
-    this.damage = 0;
+    this.damage = 90;
 
     //TODO spritemaps
     let spriteSrc = `/sprites/${this.id}_s_${this.currentDir}.png`;
@@ -83,7 +83,7 @@ class Fighter {
     }
 
     if (this.stun) {
-      this.hitstun();
+      this.stop();
     } else if (this.game.currentKeys[this.keyBindings.right]) {
       if (this.game.keyChanged && this.currentDir !== 1) {
         this.turn(1);
@@ -168,21 +168,21 @@ class Fighter {
   getHit(hitbox) {
     const angleToSpeedModifier = hitbox.angle / 45;
 
+    this.stun = true;
+    this.invulnerable = true;
+
     this.currentVerticalDir = -1;
-    this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback * (1 + this.damage / 100);
+    this.currentFallSpeed = this.currentVerticalDir * angleToSpeedModifier * hitbox.knockback - (this.damage / 100 * hitbox.growth);
 
     this.damage += hitbox.damage;
 
     this.currentDir = hitbox.dir;
-    this.currentSpeed = (1 / angleToSpeedModifier) * hitbox.knockback;
-
-    //this.stun = true;
-    this.invulnerable = true;
+    this.currentSpeed = (1 / angleToSpeedModifier) * hitbox.knockback + (this.damage / 100 * hitbox.growth);
 
     let character = this;
     setTimeout(function() {
       character.invulnerable = false;
-    }, 100);
+    }, (1000 / this.game.fps) * hitbox.cooldown);
 
     setTimeout(function() {
       character.stun = false;
@@ -216,6 +216,7 @@ class Fighter {
     if (this.currentSpeed > 0) {
       this.currentSpeed -= deceleration;
       if (this.currentSpeed < 0) this.currentSpeed = 0;
+
     }
 
     for (let i = 0; i < this.hurtboxes.length; i++) {
@@ -242,7 +243,7 @@ class Fighter {
   }
 
   fall(gravity, floors) {
-    if (this.currentVerticalDir === -1) {
+    if (this.currentVerticalDir === -1 && !this.stun) {
       this.jump(gravity, floors);
       return;
     }
@@ -258,6 +259,7 @@ class Fighter {
 
       for (let f = 0; f < floors.length; f++) {
         let floor = floors[f];
+
         if (
           !this.jumping &&
           (hurtbox.y >= floor.y && this.currentVerticalDir === 1) &&
@@ -268,7 +270,7 @@ class Fighter {
           hitFloor = true;
           if (this.stun) {
             this.stun = false;
-            this.currentSpeed = this.currentDir;
+            // this.currentSpeed = this.currentDir;
           }
           this.hurtboxes[0].y = floor.y;
         }
@@ -282,6 +284,7 @@ class Fighter {
       }
 
       this.currentFallSpeed += gravity / (this.weight * this.game.fps);
+      if(this.currentFallSpeed > 0) this.currentVerticalDir = 1;
       hurtbox.y += this.currentFallSpeed;
     }
   }
@@ -584,8 +587,8 @@ class Stage {
  *
  *	Hellfire/Characters/AllAroundDude
  *	Declan Tyson
- *	v0.0.120
- *	02/11/2018
+ *	v0.0.121
+ *	14/11/2018
  *
  */
 
@@ -609,9 +612,9 @@ class AllAroundDude extends Fighter {
             width: 5,
             height: 5,
             damage: 4,
-            angle: 35,
-            knockback: 2,
-            growth: 0,
+            angle: 90,
+            knockback: 1,
+            growth: 1,
             hitstun: 60,
             startFrame: 8,
             endFrame: 14,
@@ -624,9 +627,9 @@ class AllAroundDude extends Fighter {
             width: 10,
             height: 10,
             damage: 5,
-            angle: 35,
-            knockback: 2,
-            growth: 0,
+            angle: 90,
+            knockback: 1.5,
+            growth: 1,
             hitstun: 25,
             startFrame: 14,
             endFrame: 21,
@@ -641,9 +644,9 @@ class AllAroundDude extends Fighter {
             width: 15,
             height: 15,
             damage: 20,
-            angle: 15,
-            knockback: 2,
-            growth: 0,
+            angle: 45,
+            knockback: 5,
+            growth: 5,
             hitstun: 60,
             startFrame: 21,
             endFrame: 30,
@@ -656,9 +659,9 @@ class AllAroundDude extends Fighter {
             width: 15,
             height: 5,
             damage: 5,
-            angle: 15,
-            knockback: 3,
-            growth: 0,
+            angle: 45,
+            knockback: 5,
+            growth: 5,
             hitstun: 60,
             startFrame: 21,
             endFrame: 30,

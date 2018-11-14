@@ -2,8 +2,8 @@
  *
  *	Hellfire/Characters/AllAroundDude
  *	Declan Tyson
- *	v0.0.120
- *	02/11/2018
+ *	v0.0.121
+ *	14/11/2018
  *
  */
 
@@ -31,9 +31,9 @@ class AllAroundDude extends Fighter {
             width: 5,
             height: 5,
             damage: 4,
-            angle: 35,
-            knockback: 2,
-            growth: 0,
+            angle: 90,
+            knockback: 1,
+            growth: 1,
             hitstun: 60,
             startFrame: 8,
             endFrame: 14,
@@ -46,9 +46,9 @@ class AllAroundDude extends Fighter {
             width: 10,
             height: 10,
             damage: 5,
-            angle: 35,
-            knockback: 2,
-            growth: 0,
+            angle: 90,
+            knockback: 1.5,
+            growth: 1,
             hitstun: 25,
             startFrame: 14,
             endFrame: 21,
@@ -63,9 +63,9 @@ class AllAroundDude extends Fighter {
             width: 15,
             height: 15,
             damage: 20,
-            angle: 15,
-            knockback: 2,
-            growth: 0,
+            angle: 45,
+            knockback: 5,
+            growth: 5,
             hitstun: 60,
             startFrame: 21,
             endFrame: 30,
@@ -78,9 +78,9 @@ class AllAroundDude extends Fighter {
             width: 15,
             height: 5,
             damage: 5,
-            angle: 15,
-            knockback: 3,
-            growth: 0,
+            angle: 45,
+            knockback: 5,
+            growth: 5,
             hitstun: 60,
             startFrame: 21,
             endFrame: 30,
